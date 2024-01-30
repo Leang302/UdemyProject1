@@ -9,6 +9,11 @@ use Psy\CodeCleaner\PassableByReferencePass;
 
 class UserController extends Controller
 {
+    public function logout()
+    {
+        auth()->logout();
+        return redirect('/')->with("success", "You are now logged out");
+    }
     public function showCorrectHomePage()
     {
         if (auth()->check()) {
@@ -26,9 +31,9 @@ class UserController extends Controller
         ]);
         if (auth()->attempt(['username' => $incomingFields['loginusername'], 'password' => $incomingFields['loginpassword']])) {
             $request->session()->regenerate();
-            return 'congrats';
+            return redirect('/')->with("success", "You have successfully login");
         } else {
-            return 'fails';
+            return redirect('/')->with('failure', 'Invalid log in');
         }
     }
     public function register(Request $request)
@@ -39,8 +44,9 @@ class UserController extends Controller
             "password" => ["required", 'min:3', 'max:30', 'confirmed'],
         ]);
         $incomingFields['password'] = bcrypt($incomingFields['password']);
-        User::create($incomingFields);
-        return "Hello from register functon";
+        $user = User::create($incomingFields);
+        auth()->login($user);
+        return redirect('/')->with('success', 'You are now logged in');
     }
 
 }
