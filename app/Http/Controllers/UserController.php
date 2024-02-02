@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -9,6 +10,9 @@ use Psy\CodeCleaner\PassableByReferencePass;
 
 class UserController extends Controller
 {
+    public function showProfile(User $user){
+        return view("/profile-posts",['username'=>$user->username,'posts'=>$user->posts()->latest()->get(),'postCounts'=>$user->posts()->get()->count()]);
+    }
     public function logout()
     {
         auth()->logout();
