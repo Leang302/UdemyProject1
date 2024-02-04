@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Route::get('admins-only',function(){return 'admin page';})->middleware("can:visitAdminPage");
 //user related routes
 Route::get('/', [UserController::class, 'showCorrectHomePage'])->name('login');
 Route::post('/register', [UserController::class, 'register'])->middleware('guest');
@@ -30,4 +31,4 @@ Route::get('/post/{post}/edit',[PostController::class,'showEditForm'])->middlewa
 Route::put('/post/{post}/edit',[PostController::class,'actuallyUpdate'])->middleware('can:update,post');
 
 //profile
-Route::get('/profile/{user:username}',[UserController::class,'showProfile']);
+Route::get('/profile/{user:username}',[UserController::class,'showProfile']); 
