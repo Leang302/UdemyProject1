@@ -2,16 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
-use Psy\CodeCleaner\PassableByReferencePass;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
+    public function uploadAvatar(Request $request){
+        //resizing image via = intervention
+        $request->validate([
+            'avatar'=>'required|image|max:6000'
+        ]);
+        $user= auth()->user();
+        $fileName = $user->id.'-'. uniqid().'.jpg';
+        
+        $imageData = Image::make($request->file('avatar'))->fit(120)->encode('jpg');
+        Storage::put('/public/avatars/'.$fileName,$imageData);
+
+        $oldAvatar = $user->avatar;
+
+        $user->avatar= $fileName;
+        $user->save();
+        if($oldAvatar!='/fallback-avatar.jpg'){
+            Storage::delete(str_replace('/storage','/public',$oldAvatar));
+        }
+        return redirect('/profile/'.auth()->user()->username)->with('success','You have successfully updated your profile');
+
+    }
+    public function showAvatarForm(){
+        return view('avatar-form');
+    }
     public function showProfile(User $user){
-        return view("/profile-posts",['username'=>$user->username,'posts'=>$user->posts()->latest()->get(),'postCounts'=>$user->posts()->get()->count()]);
+        return view("/profile-posts",['userImage'=>$user->avatar,'username'=>$user->username,'posts'=>$user->posts()->latest()->get(),'postCounts'=>$user->posts()->get()->count(),'userId'=>$user->id]);
     }
     public function logout()
     {
