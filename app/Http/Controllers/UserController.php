@@ -6,11 +6,32 @@ use App\Models\Follow;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 use Illuminate\Validation\Rule;
 use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
-{
+{   
+    //this is the way to share data across function 
+    private function getSharedData($user){
+        $currentlyfollowing=0;
+        if(auth()->check()){
+            $currentlyfollowing= Follow::where([['user_id',"=",auth()->user()->id],['followedUser','=',$user->id]])->count();
+        }
+        View::share('sharedData',['currentlyFollowing'=>$currentlyfollowing,'userImage'=>$user->avatar,'username'=>$user->username,'postCounts'=>$user->posts()->get()->count(),'userId'=>$user->id]);
+    }
+    public function showProfile(User $user){
+        $this->getSharedData($user);
+        return view("/profile-posts",['posts'=>$user->posts()->latest()->get()]);
+    }
+    public function profileFollowers(User $user){
+        $this->getSharedData($user);
+        return view("/profile-followers",);
+    }
+    public function profileFollowing(User $user){
+        $this->getSharedData($user);
+        return view("/profile-following",);
+    }
     public function uploadAvatar(Request $request){
         //resizing image via = intervention
         $request->validate([
@@ -35,13 +56,7 @@ class UserController extends Controller
     public function showAvatarForm(){
         return view('avatar-form');
     }
-    public function showProfile(User $user){
-        $currentlyfollowing = 0;
-        if(auth()->check()){
-            $currentlyfollowing= Follow::where([['user_id',"=",auth()->user()->id],['followedUser','=',$user->id]])->count();
-        }
-        return view("/profile-posts",['currentlyFollowing'=>$currentlyfollowing,'userImage'=>$user->avatar,'username'=>$user->username,'posts'=>$user->posts()->latest()->get(),'postCounts'=>$user->posts()->get()->count(),'userId'=>$user->id]);
-    }
+   
     public function logout()
     {
         auth()->logout();

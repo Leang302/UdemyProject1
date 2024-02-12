@@ -39,3 +39,5 @@ Route::put('/post/{post}/edit',[PostController::class,'actuallyUpdate'])->middle
 
 //profile
 Route::get('/profile/{user:username}',[UserController::class,'showProfile']); 
+Route::get('/profile/{user:username}/followers',[UserController::class,'profileFollowers']); 
+Route::get('/profile/{user:username}/following',[UserController::class,'profileFollowing']); 
