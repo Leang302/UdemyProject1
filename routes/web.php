@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Gate;
@@ -23,6 +24,10 @@ Route::post('/login', [UserController::class, 'login'])->middleware('guest');
 Route::post('/log-out', [UserController::class, 'logout'])->middleware('mustBeLoggedIn');
 Route::get('/manage-avatar',[UserController::class,'showAvatarForm'])->middleware('mustBeLoggedIn');
 Route::post('/manage-avatar',[UserController::class,'uploadAvatar'])->middleware('mustBeLoggedIn');
+
+//follow related route
+Route::post('/create-follow/{user:username}',[FollowController::class,'createFollow'])->middleware('mustBeLoggedIn');
+Route::post('/remove-follow/{user:username}',[FollowController::class,'removeFollow'])->middleware('mustBeLoggedIn');
 
 //post related routes
 Route::get('/create-post', [PostController::class, 'showCreateForm'])->middleware('mustBeLoggedIn');

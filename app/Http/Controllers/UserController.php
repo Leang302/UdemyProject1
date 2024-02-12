@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follow;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -35,7 +36,11 @@ class UserController extends Controller
         return view('avatar-form');
     }
     public function showProfile(User $user){
-        return view("/profile-posts",['userImage'=>$user->avatar,'username'=>$user->username,'posts'=>$user->posts()->latest()->get(),'postCounts'=>$user->posts()->get()->count(),'userId'=>$user->id]);
+        $currentlyfollowing = 0;
+        if(auth()->check()){
+            $currentlyfollowing= Follow::where([['user_id',"=",auth()->user()->id],['followedUser','=',$user->id]])->count();
+        }
+        return view("/profile-posts",['currentlyFollowing'=>$currentlyfollowing,'userImage'=>$user->avatar,'username'=>$user->username,'posts'=>$user->posts()->latest()->get(),'postCounts'=>$user->posts()->get()->count(),'userId'=>$user->id]);
     }
     public function logout()
     {
