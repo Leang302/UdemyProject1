@@ -18,7 +18,7 @@ class UserController extends Controller
         if(auth()->check()){
             $currentlyfollowing= Follow::where([['user_id',"=",auth()->user()->id],['followedUser','=',$user->id]])->count();
         }
-        View::share('sharedData',['currentlyFollowing'=>$currentlyfollowing,'userImage'=>$user->avatar,'username'=>$user->username,'postCounts'=>$user->posts()->get()->count(),'userId'=>$user->id]);
+        View::share('sharedData',['currentlyFollowing'=>$currentlyfollowing,'userImage'=>$user->avatar,'username'=>$user->username,'postCounts'=>$user->posts()->get()->count(),'userId'=>$user->id,"followersCount"=>$user->followers()->get()->count(),"followingCount"=>$user->following()->get()->count()]);
     }
     public function showProfile(User $user){
         $this->getSharedData($user);
@@ -26,11 +26,11 @@ class UserController extends Controller
     }
     public function profileFollowers(User $user){
         $this->getSharedData($user);
-        return view("/profile-followers",);
+        return view("/profile-followers",['followers'=>$user->followers()->latest()->get()]);
     }
     public function profileFollowing(User $user){
         $this->getSharedData($user);
-        return view("/profile-following",);
+        return view("/profile-following",['followings'=>$user->following()->latest()->get()]);
     }
     public function uploadAvatar(Request $request){
         //resizing image via = intervention

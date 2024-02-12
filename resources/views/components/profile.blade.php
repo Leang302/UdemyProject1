@@ -4,13 +4,13 @@
           <img class="avatar-small" src="{{$sharedData['userImage']}}" /> {{$sharedData['username']}}
           @auth
           @if (!$sharedData['currentlyFollowing'] and auth()->user()->id!=$sharedData['userId'])
-          <form class="ml-2 d-inline" action="/create-follow/{{$username}}" method="POST">
+          <form class="ml-2 d-inline" action="/create-follow/{{$sharedData['username']}}" method="POST">
             @csrf
             <button class="btn btn-primary btn-sm">Follow<i class="fas fa-user-plus"></i></button>
           </form>
           @endif
          @if ($sharedData['currentlyFollowing'])
-         <form class="ml-2 d-inline" action="/remove-follow/{{$username}}" method="POST">
+         <form class="ml-2 d-inline" action="/remove-follow/{{$sharedData['username']}}" method="POST">
           @csrf
           <button class="btn btn-danger btn-sm">Stop Following <i class="fas fa-user-times"></i></button>
         </form>
@@ -27,8 +27,8 @@
         {{-- if we want to check the follower we need to use segment 3 --}}
         <div class="profile-nav nav nav-tabs pt-2 mb-4">
           <a href="/profile/{{$sharedData['username']}}" class="profile-nav-link nav-item nav-link {{ Request::segment(3)==""?"active":""}}">Posts: {{$sharedData['postCounts']}}</a>
-          <a href="/profile/{{$sharedData['username']}}/followers" class="profile-nav-link nav-item nav-link {{ Request::segment(3)=="followers"?"active":""}}">Followers: 3</a>
-          <a href="/profile/{{$sharedData['username']}}/following" class="profile-nav-link nav-item nav-link {{Request::segment(3)=="following"?"active":""}}">Following: 2</a>
+          <a href="/profile/{{$sharedData['username']}}/followers" class="profile-nav-link nav-item nav-link {{ Request::segment(3)=="followers"?"active":""}}">Followers: {{$sharedData['followersCount']}}</a>
+          <a href="/profile/{{$sharedData['username']}}/following" class="profile-nav-link nav-item nav-link {{Request::segment(3)=="following"?"active":""}}">Following: {{$sharedData['followingCount']}}</a>
         </div>
         <div class="profile-slot-content">
             {{$slot}}
