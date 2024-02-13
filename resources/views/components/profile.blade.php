@@ -1,4 +1,11 @@
-<x-layout>
+<x-layout :doctitle="$doctitle">
+    {{-- when passing props 
+    : = we want to pass php variable
+    example :propsname ="$variable"
+    wihtout : = passsing non variable
+    example propsname = "{{$sharedData['username']}}'s followers" --}}
+
+
     <div class="container py-md-5 container--narrow">
         <h2>
           <img class="avatar-small" src="{{$sharedData['userImage']}}" /> {{$sharedData['username']}}
