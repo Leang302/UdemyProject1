@@ -8,6 +8,10 @@
         <strong>{{$feedpost->title}}</strong> {{$feedpost->created_at->format('d/F/Y')}}
       </a>
     @endforeach
+    <div class="mt-4 ">
+      {{$feedposts->links()}}  
+    </div>
+    {{-- for pagination --}}
       
         @else
         <p>Your feed is empty</p>
