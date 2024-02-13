@@ -48,6 +48,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function feedPosts(){
+        return $this->hasManyThrough(Post::class,Follow::class,'user_id','user_id','id','followedUser');
+    }
     public function followers(){
         return $this->hasMany(Follow::class,'followedUser');
     }
