@@ -50,4 +50,9 @@ class PostController extends Controller
     {
         return view('create-post');
     }
+    public function search($term){
+       $posts = Post::search($term)->get();
+       $posts->load('user:id,username,avatar');
+       return $posts;
+    }
 }
