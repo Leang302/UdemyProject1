@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\FollowController;
+use App\Events\ChatMessage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FollowController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,3 +43,18 @@ Route::get('/search/{term}',[PostController::class,'search']);
 Route::get('/profile/{user:username}',[UserController::class,'showProfile']); 
 Route::get('/profile/{user:username}/followers',[UserController::class,'profileFollowers']); 
 Route::get('/profile/{user:username}/following',[UserController::class,'profileFollowing']); 
+
+//chat related routes
+Route::post('/send-chat-message',function (Request $request){
+    $formFields = $request->validate([
+        'textvalue'=>'required'
+    ]);
+    //!trim(parameter) = to check if it's empty or contain only whitespace
+    if(!trim(strip_tags($formFields['textvalue']))){
+        return response()->noContent();
+    }
+    //broadcast = brocast to all user
+    broadcast(new ChatMessage(['username'=>auth()->user()->username,'textvalue'=>strip_tags($request['textvalue']),'avatar'=>auth()->user()->avatar]))->toOthers();
+    return response()->noContent();
+
+})->middleware('mustBeLoggedIn');

@@ -25,7 +25,7 @@
               </div>
   
               <div class="form-group">
-                <label for="password-register" class="text-muted mb-1"><small>Password</small></label>
+              <label for="password-register" class="text-muted mb-1"><small>Password</small></label>
                 <input name="password" id="password-register" class="form-control" type="password" placeholder="Create a password" />
                 @error("password")
                 <p class="m-0 small alert alert-danger shadow-sm">{{$message}}</p>
