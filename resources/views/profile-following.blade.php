@@ -1,11 +1,3 @@
 <x-profile :sharedData="$sharedData" doctitle="{{$sharedData['username']}}'s followings">
-    <div class="list-group">
-      @foreach ($followings as $following)
-      <a href="/profile/{{$following->userBeingFollowed->username}}" class="list-group-item list-group-item-action">
-          <img class="avatar-tiny" src="{{$following->userBeingFollowed->avatar}}" />
-          {{$following->userBeingFollowed->username}}
-        </a>
-      @endforeach
-    </a>
-    </div>
+    @include('profile-following-only')
   </x-profile>

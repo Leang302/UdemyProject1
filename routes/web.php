@@ -43,6 +43,9 @@ Route::get('/search/{term}',[PostController::class,'search']);
 Route::get('/profile/{user:username}',[UserController::class,'showProfile']); 
 Route::get('/profile/{user:username}/followers',[UserController::class,'profileFollowers']); 
 Route::get('/profile/{user:username}/following',[UserController::class,'profileFollowing']); 
+Route::get('/profile/{user:username}/raw',[UserController::class,'showProfileRaw']); 
+Route::get('/profile/{user:username}/followers/raw',[UserController::class,'profileFollowersRaw']); 
+Route::get('/profile/{user:username}/following/raw',[UserController::class,'profileFollowingRaw']); 
 
 //chat related routes
 Route::post('/send-chat-message',function (Request $request){
