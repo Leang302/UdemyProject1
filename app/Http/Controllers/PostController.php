@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Jobs\SendNewPostEmail;
 use App\Mail\NewPostEmail;
 use App\Models\Post;
 use Illuminate\Auth\Access\Gate;
@@ -46,7 +47,7 @@ class PostController extends Controller
         $incomingFields['body'] = strip_tags($incomingFields['body']);
         $incomingFields['user_id'] = auth()->id();
         $newPost = Post::create($incomingFields);
-        Mail::to(auth()->user()->email)->send(new NewPostEmail(['name'=>auth()->user()->username,'title'=>$newPost->title]));
+        dispatch(new SendNewPostEmail(['sendTo'=>auth()->user()->email,'name'=>auth()->user()->username,'title'=>$newPost->title]));
         return redirect("/post/{$newPost->id}")->with('success', 'new Post successfully created');
     }
     public function showCreateForm()
