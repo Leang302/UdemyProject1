@@ -13,13 +13,12 @@ use Illuminate\Support\Facades\Mail;
 class SendNewPostEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    public $incoming;
     /**
      * Create a new job instance.
      */
-    public function __construct($incoming)
+    public function __construct(public $incoming)
     {
-        $this->incoming= $incoming;
+      
     }
 
     /**
