@@ -47,7 +47,8 @@ class PostController extends Controller
         $incomingFields['body'] = strip_tags($incomingFields['body']);
         $incomingFields['user_id'] = auth()->id();
         $newPost = Post::create($incomingFields);
-        dispatch(new SendNewPostEmail(['sendTo'=>auth()->user()->email,'name'=>auth()->user()->username,'title'=>$newPost->title]));
+        dispatch(new SendNewPostEmail(['sendTo'=>auth()->user()->email,'name'=>auth()->user()->username,
+        'title'=>$newPost->title]));
         return redirect("/post/{$newPost->id}")->with('success', 'new Post successfully created');
     }
     public function showCreateForm()

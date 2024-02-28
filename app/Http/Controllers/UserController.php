@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Events\ExampleEvent;
 use App\Models\Follow;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Validation\Rule;
 use Intervention\Image\Facades\Image;
+use PhpParser\Node\Stmt\Catch_;
 
-class UserController extends Controller
-{   
+class UserController extends Controller{   
     //this is the way to share data across function 
     private function getSharedData($user){
         $currentlyfollowing=0;
@@ -76,10 +78,14 @@ class UserController extends Controller
     public function showCorrectHomePage()
     {
         if (auth()->check()) {
-            return view('homepage-feed',['feedposts'=>auth()->user()->feedPosts()->latest()->paginate(4)]);
+            return view('homepage-feed',['feedposts'=>auth()->user->feedPosts()->latest()->paginate(4)]);
 
         } else {
-            return view('homepage');
+            $postCount = Cache::remember('postCount',20,function(){
+                sleep(5);
+                return Post::count();
+            });
+            return view('homepage',['postCount'=>$postCount]);
         }
     }
     public function login(Request $request)
