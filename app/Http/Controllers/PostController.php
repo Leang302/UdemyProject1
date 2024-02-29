@@ -37,6 +37,19 @@ class PostController extends Controller
         $post['body'] = strip_tags(Str::markdown($post->body), '<p><ul><li><ol>');
         return view('single-post', ['post' => $post]);
     }
+    public function storeNewPostApi(Request $request){
+        $incomingFields = $request->validate([
+            'title' => "required",
+            'body' => "required"
+        ]);
+        $incomingFields['title'] = strip_tags($incomingFields['title']);
+        $incomingFields['body'] = strip_tags($incomingFields['body']);
+        $incomingFields['user_id'] = auth()->id();
+        $newPost = Post::create($incomingFields);
+        dispatch(new SendNewPostEmail(['sendTo'=>auth()->user()->email,'name'=>auth()->user()->username,
+        'title'=>$newPost->title]));
+        return $newPost->id;
+    }
     public function storeNewPost(Request $request)
     {
         $incomingFields = $request->validate([

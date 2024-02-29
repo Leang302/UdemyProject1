@@ -82,12 +82,24 @@ class UserController extends Controller{
 
         } else {
             $postCount = Cache::remember('postCount',20,function(){
-                sleep(5);
+                //sleep(5) to test cache
                 return Post::count();
             });
             return view('homepage',['postCount'=>$postCount]);
         }
     }
+    public function loginApi(Request $request){
+        $incomingFields=$request->validate([
+            'username'=>'required',
+            'password'=>'required'
+        ]);
+        if(auth()->attempt($incomingFields)){
+            $user = User::where('username',$incomingFields['username'])->first();
+            $token = $user->createToken('ourapptoken')->plainTextToken;
+            return $token;
+        }
+        return 'invalid user'; 
+    }   
     public function login(Request $request)
     {
         $incomingFields = $request->validate([
