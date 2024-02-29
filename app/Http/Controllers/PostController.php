@@ -26,7 +26,13 @@ class PostController extends Controller
     public function showEditForm(Post $post){
         return view('edit-post',['post'=>$post]);
     }
-    public function delete(Post $post, Request $request)
+    public function deleteApi(Post $post)
+    {
+        $post->delete();
+       return 'post successfully delete';
+
+    }
+    public function delete(Post $post,)
     {
         $post->delete();
         return redirect('/profile/' . auth()->user()->username)->with('success', 'Post succesfully deleted');
